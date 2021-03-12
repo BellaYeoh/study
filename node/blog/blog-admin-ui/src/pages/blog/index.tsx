@@ -48,11 +48,11 @@ const BlogManagement: React.FC<BlogManagementProps> = () => {
         </Button>
       }
       onFinish={async (values: any) => {
-        const { id, title, summary, context } = values;
+        const { id, title, summary, markdownContent } = values;
         const params: AddBlogParams = {
           title,
           summary,
-          context,
+          markdownContent,
         };
 
         if (id) {
@@ -86,7 +86,7 @@ const BlogManagement: React.FC<BlogManagementProps> = () => {
       </ProForm.Group>
       <ProForm.Group>
         <ProFormTextArea
-          name="context"
+          name="markdownContent"
           width="lg"
           label="文章内容"
           placeholder="请输入文章内容"

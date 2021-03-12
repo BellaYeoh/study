@@ -12,7 +12,7 @@ export type AddBlogParams = {
   id?: string;
   title: string;
   summary: string;
-  context: string;
+  markdownContent: string;
 };
 
 export async function addBlog(params: AddBlogParams) {
