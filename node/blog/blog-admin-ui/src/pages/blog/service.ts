@@ -1,4 +1,4 @@
-import { GET } from 'umi-request';
+import { GET, POST } from '@/utils';
 import API from './API';
 
 type BlogListParam = {
@@ -7,5 +7,18 @@ type BlogListParam = {
   pageIndex: number;
   pageSize: number;
 };
-async function getBlogList(params: BlogListParam) {}
-return GET(API.getBlogList, params);
+
+export type AddBlogParams = {
+  id?: string;
+  title: string;
+  summary: string;
+  context: string;
+};
+
+export async function addBlog(params: AddBlogParams) {
+  return POST(API.addBlogList, params);
+}
+
+export async function getBlogList(params: BlogListParam) {
+  return GET(API.getBlogList, params);
+}

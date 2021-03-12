@@ -13,7 +13,7 @@ export type BlogManagementState = {
   blogList: BlogListData[];
 };
 
-type BlogListData = {
+export type BlogListData = {
   id: string;
   title: string;
   summary: string;

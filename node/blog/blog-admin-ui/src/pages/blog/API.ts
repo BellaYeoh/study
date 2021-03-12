@@ -1,5 +1,6 @@
 const { HOST } = process.env;
 
-export default{
-    getBlogList:`${HOST}api/blog/list`,
+export default {
+  addBlogList: `${HOST}api/blog/add`,
+  getBlogList: `${HOST}api/blog/list`,
 };

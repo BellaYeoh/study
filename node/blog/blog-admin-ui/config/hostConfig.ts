@@ -1,4 +1,4 @@
 export default {
-  DEV: 'http://localhost:8080/',
+  DEV: 'http://localhost:8000/',
   PROD: '',
 };

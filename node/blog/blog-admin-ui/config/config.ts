@@ -12,7 +12,6 @@ export default defineConfig({
   },
   layout: {
     name: 'frontEnd.fans',
-    locale: true,
   },
   nodeModulesTransform: {
     type: 'none',
@@ -23,4 +22,5 @@ export default defineConfig({
     default: 'zh-CN',
   },
   dva: {},
+  ignoreMomentLocale: true,
 });
