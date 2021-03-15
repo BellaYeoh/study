@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, message } from 'antd';
+import { Button, Form, message } from 'antd';
 import { connect, Loading } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import { PlusOutlined } from '@ant-design/icons';
@@ -18,7 +18,10 @@ import {
 } from './index.d';
 import { PageConfig, responseChecker } from '@/utils';
 
-const BlogManagement: React.FC<BlogManagementProps> = () => {
+const BlogManagement: React.FC<BlogManagementProps> = (props) => {
+  const {
+    state: { id, title, summary, markdownContent },
+  } = props;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const columns: ProColumns<BlogListData>[] = [
@@ -44,62 +47,76 @@ const BlogManagement: React.FC<BlogManagementProps> = () => {
     },
   ];
 
-  const FormComponent = (
-    <ModalForm
-      visible={modalVisible}
-      trigger={
-        <Button type="primary" onClick={() => setModalVisible(true)}>
-          <PlusOutlined />
-          新建
-        </Button>
-      }
-      onFinish={async (values: any) => {
-        const { id, title, summary, markdownContent } = values;
-        const params: AddBlogParams = {
-          title,
-          summary,
-          markdownContent,
-        };
+  const FormComponent = (id: string) => {
+    const [form] = Form.useForm();
+    let params = {
+      title: '',
+      summary: '',
+      markdownContent: '',
+    };
 
-        if (id) {
-          params.id = id;
+    if (id) {
+    }
+
+    return (
+      <ModalForm
+        visible={modalVisible}
+        form={form}
+        initialValues={params}
+        trigger={
+          <Button type="primary" onClick={() => setModalVisible(true)}>
+            <PlusOutlined />
+            新建
+          </Button>
         }
+        onFinish={async (values: any) => {
+          const { id, title, summary, markdownContent } = values;
+          const params: AddBlogParams = {
+            title,
+            summary,
+            markdownContent,
+          };
 
-        const response = await addBlog(params);
-        if (responseChecker(response)) {
-          message.success('新建成功！');
-        }
+          if (id) {
+            params.id = id;
+          }
 
-        setModalVisible(false);
-      }}
-      modalProps={{
-        onCancel: () => setModalVisible(false),
-      }}
-    >
-      <ProForm.Group>
-        <ProFormText
-          name="title"
-          width="md"
-          label="标题"
-          placeholder="请输入标题"
-        />
-        <ProFormTextArea
-          name="summary"
-          width="lg"
-          label="概述"
-          placeholder="请输入概述"
-        />
-      </ProForm.Group>
-      <ProForm.Group>
-        <ProFormTextArea
-          name="markdownContent"
-          width="lg"
-          label="文章内容"
-          placeholder="请输入文章内容"
-        />
-      </ProForm.Group>
-    </ModalForm>
-  );
+          const response = await addBlog(params);
+          if (responseChecker(response)) {
+            message.success('新建成功！');
+          }
+
+          setModalVisible(false);
+        }}
+        modalProps={{
+          onCancel: () => setModalVisible(false),
+        }}
+      >
+        <ProForm.Group>
+          <ProFormText
+            name="title"
+            width="md"
+            label="标题"
+            placeholder="请输入标题"
+          />
+          <ProFormTextArea
+            name="summary"
+            width="lg"
+            label="概述"
+            placeholder="请输入概述"
+          />
+        </ProForm.Group>
+        <ProForm.Group>
+          <ProFormTextArea
+            name="markdownContent"
+            width="lg"
+            label="文章内容"
+            placeholder="请输入文章内容"
+          />
+        </ProForm.Group>
+      </ModalForm>
+    );
+  };
 
   return (
     <PageContainer>
