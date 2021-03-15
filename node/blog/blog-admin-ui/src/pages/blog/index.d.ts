@@ -6,8 +6,10 @@ export type BlogManagementProps = {
 };
 
 export type BlogManagementState = {
+  id: string;
   title: string;
   summary: string;
+  markdownContent: string;
   pageIndex: number;
   pageSize: number;
   blogList: BlogListData[];

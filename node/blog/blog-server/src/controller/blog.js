@@ -2,8 +2,6 @@ const marked = require("marked");
 const mdToc = require("markdown-toc");
 const { markdownToHtmlRender } = require("../utils");
 const blog = require("../dao/blog");
-const Tag = require("../dao/models/tag");
-const Category = require("../dao/models/category");
 
 module.exports = {
   async addBlog(id, title, summary, markdownContent) {
@@ -18,18 +16,33 @@ module.exports = {
       renderer: markdownToHtmlRender,
     });
 
-    if (id) {
-      await blog.update(id, {
-        title,
-        summary,
-        markdownContent,
-        htmlContent,
-      });
-    }
+    try {
+      if (id) {
+        await blog.update(id, {
+          title,
+          summary,
+          markdownContent,
+          htmlContent,
+        });
+      }
 
-    return await blog.add({ title, summary, markdownContent, htmlContent });
+      await blog.add({ title, summary, markdownContent, htmlContent });
+      return {};
+    } catch (error) {
+      return { success: false, errMessage: id ? "更新失败" : "插入失败" };
+    }
   },
-  async getBlogList() {},
+  async getBlogList(title, summary, pageIndex, pageSize) {
+    const [count, blogs] = await Promise.all([
+      blog.getBlogsCount(title, summary),
+      blog.getBlogList(title, summary, pageIndex, pageSize),
+    ]);
+
+    return {
+      total: count,
+      data: blogs,
+    };
+  },
   async getBlog() {},
   async updateBlog() {},
   async deleteBlogById() {},

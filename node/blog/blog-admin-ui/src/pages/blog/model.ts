@@ -17,8 +17,10 @@ type Model = {
 const model: Model = {
   namespace: 'blogManagement',
   state: {
+    id: '',
     title: '',
     summary: '',
+    markdownContent: '',
     pageIndex: PageConfig.defaultPageIndex,
     pageSize: PageConfig.defaultPageSize,
     blogList: [],

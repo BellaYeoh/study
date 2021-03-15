@@ -2,6 +2,15 @@ export default {
   'POST /api/blog/add': {
     success: true,
   },
+  'GET /api/blog/1': {
+    success: true,
+    data: {
+      id: '1',
+      title: '文章1',
+      summary: '概述概述概述1',
+      createTime: '2020-03-15',
+    },
+  },
   'GET /api/blog/list': {
     success: true,
     data: [

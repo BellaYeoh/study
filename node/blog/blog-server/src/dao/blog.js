@@ -13,32 +13,51 @@ module.exports = {
       isDelete: true,
     });
   },
-  async getPhotos(title, tags, category, pageIndex, pageSize) {
+  async getBlogList(title, summary, pageIndex, pageSize) {
     let result;
+    let params = {
+      isDelete: false,
+    };
+
+    if (title) {
+      params.title = { $regex: title };
+    }
+
+    if (summary) {
+      params.summary = { $regex: summary };
+    }
+
+    console.log(params);
+
     if (pageSize) {
-      result = await Blog.find({
-        title,
-        tags,
-        category,
-        isDelete: false,
-      })
+      result = await Blog.find(params)
         .sort({
-          created: -1,
+          createTime: -1,
         })
         .skip((pageIndex - 1) * pageSize)
-        .limit(pageSize);
+        .limit(Number(pageSize));
     } else {
-      result = await Blog.find({
-        title,
-        tags,
-        category,
-        isDelete: false,
-      }).sort({
-        created: -1,
+      result = await Blog.find(params).sort({
+        createTime: -1,
       });
     }
 
     return result;
+  },
+  async getBlogsCount(title, summary) {
+    let params = {
+      isDelete: false,
+    };
+
+    if (title !== undefined) {
+      params.title = { $regex: title };
+    }
+
+    if (summary !== undefined) {
+      params.summary = { $regex: summary };
+    }
+
+    return Blog.count(params);
   },
   async getBlogById(id) {
     return await Blog.findById(id);

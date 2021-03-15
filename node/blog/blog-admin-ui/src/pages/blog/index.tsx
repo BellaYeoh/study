@@ -36,6 +36,12 @@ const BlogManagement: React.FC<BlogManagementProps> = () => {
       dataIndex: 'createTime',
       valueType: 'dateTime',
     },
+    {
+      title: '操作',
+      key: 'option',
+      valueType: 'option',
+      render: () => [<a>编辑</a>, <a>删除</a>],
+    },
   ];
 
   const FormComponent = (
