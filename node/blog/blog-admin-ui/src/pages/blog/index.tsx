@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, message } from 'antd';
 import { connect, Loading } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -20,6 +20,7 @@ import { PageConfig, responseChecker } from '@/utils';
 
 const BlogManagement: React.FC<BlogManagementProps> = (props) => {
   const {
+    dispatch,
     state: { id, title, summary, markdownContent },
   } = props;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -43,26 +44,42 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
       title: '操作',
       key: 'option',
       valueType: 'option',
-      render: () => [<a>编辑</a>, <a>删除</a>],
+      render: (_, { _id }) => [
+        <a onClick={() => editBlog(_id)}>编辑</a>,
+        <a>删除</a>,
+      ],
     },
   ];
+  const [form] = Form.useForm();
 
-  const FormComponent = (id: string) => {
-    const [form] = Form.useForm();
-    let params = {
-      title: '',
-      summary: '',
-      markdownContent: '',
-    };
+  useEffect(() => {
+    form.setFieldsValue({
+      title,
+      summary,
+      markdownContent,
+    });
+  }, [title, summary, markdownContent]);
 
-    if (id) {
-    }
+  function editBlog(id: string) {
+    dispatch({
+      type: 'blogManagement/getBlogDetail',
+      payload: {
+        id,
+      },
+    });
+    setModalVisible(true);
+  }
 
+  const FormComponent: React.FC = () => {
     return (
       <ModalForm
         visible={modalVisible}
         form={form}
-        initialValues={params}
+        initialValues={{
+          title,
+          summary,
+          markdownContent,
+        }}
         trigger={
           <Button type="primary" onClick={() => setModalVisible(true)}>
             <PlusOutlined />
@@ -70,7 +87,7 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
           </Button>
         }
         onFinish={async (values: any) => {
-          const { id, title, summary, markdownContent } = values;
+          const { title, summary, markdownContent } = values;
           const params: AddBlogParams = {
             title,
             summary,
@@ -86,6 +103,7 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
             message.success('新建成功！');
           }
 
+          form.resetFields();
           setModalVisible(false);
         }}
         modalProps={{
@@ -145,13 +163,13 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
                 total,
               });
             }}
-            rowKey="id"
+            rowKey={(record) => `${record._id}`}
             pagination={{
               defaultCurrent: PageConfig.defaultPageIndex,
               defaultPageSize: PageConfig.defaultPageSize,
               showQuickJumper: true,
             }}
-            toolBarRender={() => [FormComponent]}
+            toolBarRender={() => [<FormComponent />]}
           />
         </ProCard>
       </ProCard>

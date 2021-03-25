@@ -21,4 +21,13 @@ router.get("/list", async (ctx, next) => {
   ctx.rest(await Blog.getBlogList(title, summary, pageIndex, pageSize));
   await next();
 });
+
+/**
+ * 根据id获取博客
+ */
+router.get("/detail", async (ctx, next) => {
+  const { id } = ctx.query;
+  ctx.rest(await Blog.getBlog(id));
+  await next();
+});
 module.exports = router.routes();

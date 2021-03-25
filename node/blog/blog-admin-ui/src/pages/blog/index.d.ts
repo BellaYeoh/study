@@ -16,7 +16,7 @@ export type BlogManagementState = {
 };
 
 export type BlogListData = {
-  id: string;
+  _id: string;
   title: string;
   summary: string;
   updateTime: string;

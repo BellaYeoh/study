@@ -15,3 +15,7 @@ Content-Type: {{contentType}}
 ### get blog list
 GET http://{{url}}/api/blog/list?title=asdf {{HTTP}}
 Content-Type: {{contentType}}
+
+### get blog by id
+GET http://{{url}}/api/blog/detail?id=604b3bdc1d0bbe641492dffb {{HTTP}}
+Content-Type: {{contentType}}

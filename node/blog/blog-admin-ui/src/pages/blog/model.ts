@@ -1,13 +1,13 @@
 import { Effect, Reducer } from 'umi';
 import { BlogManagementState } from './index.d';
-import { getBlogList } from './service';
+import { getBlogDetail } from './service';
 import { PageConfig, responseChecker } from '@/utils';
 
 type Model = {
   namespace: string;
   state: BlogManagementState;
   effects: {
-    getBlogList: Effect;
+    getBlogDetail: Effect;
   };
   reducers: {
     saveState: Reducer;
@@ -26,23 +26,21 @@ const model: Model = {
     blogList: [],
   },
   effects: {
-    *getBlogList(
-      { payload: { title, summary, pageIndex, pageSize } },
-      { call, put },
-    ) {
-      const response = yield call(getBlogList, {
-        title,
-        summary,
-        pageIndex,
-        pageSize,
-      });
+    *getBlogDetail({ payload: { id } }, { call, put }) {
+      const response = yield call(getBlogDetail, { id });
 
       if (responseChecker(response)) {
-        const { data } = response;
+        const {
+          data: { title, summary, markdownContent },
+        } = response;
+
         yield put({
           type: 'saveState',
           payload: {
-            blogList: data || [],
+            id,
+            title,
+            summary,
+            markdownContent,
           },
         });
       }

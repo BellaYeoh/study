@@ -27,8 +27,6 @@ module.exports = {
       params.summary = { $regex: summary };
     }
 
-    console.log(params);
-
     if (pageSize) {
       result = await Blog.find(params)
         .sort({

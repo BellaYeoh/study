@@ -22,3 +22,7 @@ export async function addBlog(params: AddBlogParams) {
 export async function getBlogList(params: BlogListParam) {
   return GET(API.getBlogList, params);
 }
+
+export async function getBlogDetail(params: { id: string }) {
+  return GET(API.getBlog, params);
+}

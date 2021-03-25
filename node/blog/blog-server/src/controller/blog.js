@@ -24,9 +24,10 @@ module.exports = {
           markdownContent,
           htmlContent,
         });
+      } else {
+        await blog.add({ title, summary, markdownContent, htmlContent });
       }
 
-      await blog.add({ title, summary, markdownContent, htmlContent });
       return {};
     } catch (error) {
       return { success: false, errMessage: id ? "更新失败" : "插入失败" };
@@ -43,7 +44,9 @@ module.exports = {
       data: blogs,
     };
   },
-  async getBlog() {},
+  async getBlog(id) {
+    return { data: await blog.getBlogById(id) };
+  },
   async updateBlog() {},
   async deleteBlogById() {},
 };
