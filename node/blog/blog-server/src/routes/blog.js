@@ -8,8 +8,24 @@ router.prefix("/blog");
  * 新增博客
  */
 router.post("/add", async (ctx, next) => {
-  const { id, title, summary, markdownContent } = ctx.request.body;
-  ctx.rest(await Blog.addBlog(id, title, summary, markdownContent));
+  const {
+    id,
+    title,
+    summary,
+    markdownContent,
+    tags,
+    category,
+  } = ctx.request.body;
+  ctx.rest(
+    await Blog.addBlog({
+      id,
+      title,
+      summary,
+      markdownContent,
+      tags,
+      category,
+    })
+  );
   await next();
 });
 
@@ -17,8 +33,17 @@ router.post("/add", async (ctx, next) => {
  * 获取博客列表
  */
 router.get("/list", async (ctx, next) => {
-  const { title, summary, pageIndex, pageSize } = ctx.query;
-  ctx.rest(await Blog.getBlogList(title, summary, pageIndex, pageSize));
+  const {
+    title,
+    summary,
+    tags = "",
+    category,
+    pageIndex,
+    pageSize,
+  } = ctx.query;
+  ctx.rest(
+    await Blog.getBlogList(title, summary, tags, category, pageIndex, pageSize)
+  );
   await next();
 });
 

@@ -1,11 +1,42 @@
 const Blog = require("./models/blog");
+const Category = require("./category");
+const Tag = require("./tag");
+const { APIError } = require("../utils");
 
 module.exports = {
   async add(blog) {
-    let _blog = await Blog.create(blog);
-    return _blog;
+    const { tags, category } = blog;
+    if (tags && tags.length > 0) {
+      const hasNotExistedTag = await Tag.hasNotExisted(tags);
+      if (hasNotExistedTag) {
+        throw new APIError(`${tags}不存在！`);
+      }
+    }
+
+    if (category) {
+      const categoryItem = await Category.getCategoryByName(category);
+      if (categoryItem === null) {
+        throw new APIError(`${category}不存在！`);
+      }
+    }
+    return await Blog.create(blog);
   },
   async update(id, blog) {
+    const { tags, category } = blog;
+    if (tags && tags.length > 0) {
+      const hasNotExistedTag = await Tag.hasNotExisted(tags);
+      if (hasNotExistedTag) {
+        throw new APIError(`${tags}不存在！`);
+      }
+    }
+
+    if (category) {
+      const categoryItem = await Category.getCategoryByName(category);
+      if (categoryItem === null) {
+        throw new APIError(`${category}不存在！`);
+      }
+    }
+
     return await Blog.findByIdAndUpdate(id, blog);
   },
   async delete(id) {
@@ -13,11 +44,20 @@ module.exports = {
       isDelete: true,
     });
   },
-  async getBlogList(title, summary, pageIndex, pageSize) {
+  async getBlogList(title, summary, tags, category, pageIndex, pageSize) {
     let result;
     let params = {
       isDelete: false,
     };
+
+    if (tags && tags.length > 0) {
+      const hasNotExistedTag = await Tag.hasNotExisted(tags);
+      if (!hasNotExistedTag) {
+        params.tags = tags;
+      } else {
+        throw new APIError(`${tags}不存在！`);
+      }
+    }
 
     if (title) {
       params.title = { $regex: title };
@@ -25,6 +65,15 @@ module.exports = {
 
     if (summary) {
       params.summary = { $regex: summary };
+    }
+
+    if (category) {
+      const categoryItem = await Category.getCategoryByName(category);
+      if (categoryItem) {
+        params.category = category;
+      } else {
+        throw new APIError(`${category}不存在！`);
+      }
     }
 
     if (pageSize) {
@@ -42,10 +91,19 @@ module.exports = {
 
     return result;
   },
-  async getBlogsCount(title, summary) {
+  async getBlogsCount(title, summary, tags, category) {
     let params = {
       isDelete: false,
     };
+
+    if (tags && tags.length > 0) {
+      const hasNotExistedTag = await Tag.hasNotExisted(tags);
+      if (!hasNotExistedTag) {
+        params.tags = tags;
+      } else {
+        throw new APIError(`${tags}不存在！`);
+      }
+    }
 
     if (title !== undefined) {
       params.title = { $regex: title };
@@ -53,6 +111,15 @@ module.exports = {
 
     if (summary !== undefined) {
       params.summary = { $regex: summary };
+    }
+
+    if (category) {
+      const categoryItem = await Category.getCategoryByName(category);
+      if (categoryItem) {
+        params.category = category;
+      } else {
+        throw new APIError(`${category}不存在！`);
+      }
     }
 
     return Blog.count(params);

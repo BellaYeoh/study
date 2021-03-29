@@ -22,7 +22,7 @@ const restify = (prefixReg) => {
         ctx.response.status = 400;
         ctx.response.body = {
           success: false,
-          erorCode:
+          errorMessage:
             isObject(error) && error.errorType === "APIError"
               ? error.code
               : "*:others_error",

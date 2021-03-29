@@ -9,13 +9,35 @@ Content-Type: {{contentType}}
 {
     "title":"asdf",
     "summary":"asdf",
-    "markdownContent":"asdf"
+    "markdownContent":"asdf",
+    "tags":["tag1","tag2"],
+    "category":"category"
 }
 
 ### get blog list
-GET http://{{url}}/api/blog/list?title=asdf {{HTTP}}
+GET http://{{url}}/api/blog/list?tags=tag2 {{HTTP}}
 Content-Type: {{contentType}}
 
 ### get blog by id
 GET http://{{url}}/api/blog/detail?id=604b3bdc1d0bbe641492dffb {{HTTP}}
 Content-Type: {{contentType}}
+
+### add category
+GET http://{{url}}/api/category/add?name=category1 {{HTTP}}
+Content-Type: {{contentType}}
+
+### get category list
+GET http://{{url}}/api/category/list
+
+### delete category
+GET http://{{url}}/api/category/delete?name=category1 {{HTTP}}
+
+### add tag
+GET http://{{url}}/api/tag/add?name=tag1 {{HTTP}}
+Content-Type: {{contentType}}
+
+### get tag list
+GET http://{{url}}/api/tag/list
+
+### delete tag
+GET http://{{url}}/api/tag/delete?name=tag1 {{HTTP}}
