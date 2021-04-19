@@ -55,4 +55,14 @@ router.get("/detail", async (ctx, next) => {
   ctx.rest(await Blog.getBlog(id));
   await next();
 });
+
+/**
+ * 删除博客
+ */
+router.get("/delete", async (ctx, next) => {
+  const { id } = ctx.query;
+  ctx.rest(await Blog.deleteBlogById(id));
+  await next();
+});
+
 module.exports = router.routes();

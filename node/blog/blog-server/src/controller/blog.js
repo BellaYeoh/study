@@ -52,5 +52,8 @@ module.exports = {
   async getBlog(id) {
     return { data: await Blog.getBlogById(id) };
   },
-  async deleteBlogById() {},
+  async deleteBlogById(id) {
+    await Blog.delete(id);
+    return { success: true };
+  },
 };

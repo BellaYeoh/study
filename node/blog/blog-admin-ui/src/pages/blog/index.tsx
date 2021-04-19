@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, message } from 'antd';
-import { connect, Loading } from 'umi';
+import { Button, Form, Select, message } from 'antd';
+import { connect, Loading, history } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import { PlusOutlined } from '@ant-design/icons';
 import ProCard from '@ant-design/pro-card';
@@ -18,12 +18,31 @@ import {
 } from './index.d';
 import { PageConfig, responseChecker } from '@/utils';
 
+const { Option } = Select;
+
 const BlogManagement: React.FC<BlogManagementProps> = (props) => {
   const {
     dispatch,
-    state: { id, title, summary, markdownContent },
+    state: { id, title, summary, markdownContent, tagList, categoryList },
   } = props;
+
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    dispatch({
+      type: 'blogManagement/getInitData',
+    });
+  }, []);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      title,
+      summary,
+      markdownContent,
+    });
+  }, [title, summary, markdownContent]);
 
   const columns: ProColumns<BlogListData>[] = [
     {
@@ -36,7 +55,37 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
       ellipsis: true,
     },
     {
+      title: '分类',
+      dataIndex: 'category',
+      valueType: 'select',
+      renderFormItem: () => (
+        <Select>
+          {categoryList.map((item) => (
+            <Option key={item} value={item}>
+              {item}
+            </Option>
+          ))}
+        </Select>
+      ),
+    },
+    {
+      title: '标签',
+      dataIndex: 'tags',
+      valueType: 'select',
+      renderFormItem: () => (
+        <Select mode="multiple">
+          {tagList.map((item) => (
+            <Option key={item} value={item}>
+              {item}
+            </Option>
+          ))}
+        </Select>
+      ),
+    },
+    {
       title: '创建时间',
+      key: 'string',
+      hideInSearch: true,
       dataIndex: 'createTime',
       valueType: 'dateTime',
     },
@@ -46,19 +95,10 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
       valueType: 'option',
       render: (_, { _id }) => [
         <a onClick={() => editBlog(_id)}>编辑</a>,
-        <a>删除</a>,
+        <a onClick={() => deleteBlog(_id)}>删除</a>,
       ],
     },
   ];
-  const [form] = Form.useForm();
-
-  useEffect(() => {
-    form.setFieldsValue({
-      title,
-      summary,
-      markdownContent,
-    });
-  }, [title, summary, markdownContent]);
 
   function editBlog(id: string) {
     dispatch({
@@ -68,6 +108,19 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
       },
     });
     setModalVisible(true);
+  }
+
+  function deleteBlog(id: string) {
+    dispatch({
+      type: 'blogManagement/deleteBlog',
+      payload: {
+        id,
+      },
+    });
+  }
+
+  function goToEditBlogPage(id?: string) {
+    history.push();
   }
 
   const FormComponent: React.FC = () => {
@@ -146,12 +199,17 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
               const {
                 title = '',
                 summary = '',
+                category = '',
+                tags = [],
                 current = PageConfig.defaultPageIndex,
                 pageSize = PageConfig.defaultPageSize,
               } = params;
+
               const response = await getBlogList({
                 title,
                 summary,
+                category,
+                tags: tags.join('*'),
                 pageIndex: current,
                 pageSize: pageSize,
               });
@@ -163,7 +221,9 @@ const BlogManagement: React.FC<BlogManagementProps> = (props) => {
                 total,
               });
             }}
-            rowKey={(record) => `${record._id}`}
+            rowKey={(record) => {
+              return `${record._id}`;
+            }}
             pagination={{
               defaultCurrent: PageConfig.defaultPageIndex,
               defaultPageSize: PageConfig.defaultPageSize,

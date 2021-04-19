@@ -40,9 +40,10 @@ module.exports = {
     return await Blog.findByIdAndUpdate(id, blog);
   },
   async delete(id) {
-    return await Blog.findByIdAndUpdate(id, {
-      isDelete: true,
-    });
+    // return await Blog.findByIdAndUpdate(id, {
+    //   isDelete: true,
+    // });
+    return await Blog.deleteOne({ _id: id });
   },
   async getBlogList(title, summary, tags, category, pageIndex, pageSize) {
     let result;
@@ -53,7 +54,7 @@ module.exports = {
     if (tags && tags.length > 0) {
       const hasNotExistedTag = await Tag.hasNotExisted(tags);
       if (!hasNotExistedTag) {
-        params.tags = tags;
+        params.tags = { $in: tags };
       } else {
         throw new APIError(`${tags}不存在！`);
       }

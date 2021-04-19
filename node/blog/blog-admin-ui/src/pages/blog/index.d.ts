@@ -13,6 +13,8 @@ export type BlogManagementState = {
   pageIndex: number;
   pageSize: number;
   blogList: BlogListData[];
+  categoryList: string[];
+  tagList: string[];
 };
 
 export type BlogListData = {

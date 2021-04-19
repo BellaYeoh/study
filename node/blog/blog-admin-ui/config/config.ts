@@ -12,6 +12,15 @@ export default defineConfig({
   },
   layout: {
     name: 'frontEnd.fans',
+    navTheme: 'light',
+    layout: 'side',
+    contentWidth: 'Fluid',
+    fixedHeader: true,
+    fixSiderbar: true,
+    pwa: false,
+    iconfontUrl: '',
+    headerHeight: 48,
+    splitMenus: false,
   },
   nodeModulesTransform: {
     type: 'none',
